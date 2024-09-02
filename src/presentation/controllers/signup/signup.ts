@@ -1,10 +1,10 @@
-import type { IAddAccount } from "../../domain/usercases/add-account";
-import { InvalidParamError } from "../erros/invalid-param-error";
-import { MissingParamError } from "../erros/missing-param-error";
-import { badRequest, serverError } from "../helpers/http-helper";
-import type { IController } from "../protocols/controller";
-import type { IEmailValidator } from "../protocols/email-validator";
-import type { IHttpRequest, IHttpResponse } from "../protocols/http";
+import type { IAddAccount } from "../../../domain/usercases/add-account";
+import { InvalidParamError } from "../../erros/invalid-param-error";
+import { MissingParamError } from "../../erros/missing-param-error";
+import { badRequest, ok, serverError } from "../../helpers/http-helper";
+import type { IController } from "../../protocols/controller";
+import type { IHttpRequest, IHttpResponse } from "../../protocols/http";
+import type { IEmailValidator } from "./protocols/email-validator";
 
 export class SignUpController implements IController {
 	private readonly emailValidator: IEmailValidator;
@@ -15,7 +15,7 @@ export class SignUpController implements IController {
 		this.addAccount = addAccount;
 	}
 
-	public handle(httpRequest: IHttpRequest): IHttpResponse {
+	public async handle(httpRequest: IHttpRequest): Promise<IHttpResponse> {
 		try {
 			const requiredFields = [
 				"name",
@@ -40,16 +40,13 @@ export class SignUpController implements IController {
 				return badRequest(new InvalidParamError("email"));
 			}
 
-			this.addAccount.add({
+			const account = await this.addAccount.add({
 				name,
 				email,
 				password,
 			});
 
-			return {
-				statusCode: 200,
-				body: {},
-			};
+			return ok(account);
 		} catch (error) {
 			// console.error(error);
 			return serverError();

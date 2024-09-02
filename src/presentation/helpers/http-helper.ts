@@ -10,3 +10,9 @@ export const serverError = (): IHttpResponse => ({
 	statusCode: 500,
 	body: new ServerError(),
 });
+
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+export const ok = (data: any): IHttpResponse => ({
+	statusCode: 200,
+	body: data,
+});
