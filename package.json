@@ -1,22 +1,28 @@
 {
-	"name": "backend",
-	"module": "index.ts",
-	"type": "module",
-	"scripts": {
-		"start": "bun run index.ts",
-		"generate": "drizzle-kit generate",
-		"migrate": "drizzle-kit migrate"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
-		"bun-types": "latest",
-		"drizzle-kit": "^0.24.2"
-	},
-	"peerDependencies": {
-		"typescript": "^5.0.0"
-	},
-	"dependencies": {
-		"drizzle-orm": "^0.33.0",
-		"postgres": "^3.4.4"
-	}
+  "name": "backend",
+  "module": "index.ts",
+  "type": "module",
+  "scripts": {
+    "test": "test",
+    "start": "bun run index.ts",
+    "generate": "drizzle-kit generate",
+    "migrate": "drizzle-kit migrate",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "@types/bun": "^1.1.8",
+    "bun-types": "latest",
+    "drizzle-kit": "^0.24.2",
+    "husky": "^9.1.5",
+    "lint-staged": "^15.2.10"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.33.0",
+    "postgres": "^3.4.4"
+  }
 }
