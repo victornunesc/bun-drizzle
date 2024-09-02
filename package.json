@@ -1,0 +1,22 @@
+{
+	"name": "backend",
+	"module": "index.ts",
+	"type": "module",
+	"scripts": {
+		"start": "bun run index.ts",
+		"generate": "drizzle-kit generate",
+		"migrate": "drizzle-kit migrate"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "1.8.3",
+		"bun-types": "latest",
+		"drizzle-kit": "^0.24.2"
+	},
+	"peerDependencies": {
+		"typescript": "^5.0.0"
+	},
+	"dependencies": {
+		"drizzle-orm": "^0.33.0",
+		"postgres": "^3.4.4"
+	}
+}
