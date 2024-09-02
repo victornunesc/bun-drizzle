@@ -1,6 +1,7 @@
 import { describe, expect, spyOn, test } from "bun:test";
-import { InvalidParamError } from "../erros/invalid-param-error copy";
+import { InvalidParamError } from "../erros/invalid-param-error";
 import { MissingParamError } from "../erros/missing-param-error";
+import { ServerError } from "../erros/server-error";
 import type { IEmailValidator } from "../protocols/email-validator";
 import { SignUpController } from "./signup";
 
@@ -9,14 +10,18 @@ interface SutTypes {
 	emailValidatorStub: IEmailValidator;
 }
 
-const makeSut = (): SutTypes => {
+const makeEmailValidator = (): IEmailValidator => {
 	class EmailValidatorStub implements IEmailValidator {
 		isValid(_email: string): boolean {
 			return true;
 		}
 	}
 
-	const emailValidatorStub = new EmailValidatorStub();
+	return new EmailValidatorStub();
+};
+
+const makeSut = (): SutTypes => {
+	const emailValidatorStub = makeEmailValidator();
 	const sut = new SignUpController(emailValidatorStub);
 
 	return {
@@ -113,5 +118,44 @@ describe("SignUp Controoler", () => {
 		expect(httpResponse.body.message).toBe(
 			new InvalidParamError("email").message,
 		);
+	});
+
+	test("Should call EmailValidator with correct email", () => {
+		const { sut, emailValidatorStub } = makeSut();
+		const isValidSpy = spyOn(emailValidatorStub, "isValid");
+
+		const httpRequest = {
+			body: {
+				name: "John Doe",
+				email: "john_doe@mail.com",
+				password: "my_password",
+				passwordConfirmation: "my_password",
+			},
+		};
+
+		sut.handle(httpRequest);
+
+		expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.email);
+	});
+
+	test("Should return 500 if EmailValidator throws", () => {
+		const { sut, emailValidatorStub } = makeSut();
+		spyOn(emailValidatorStub, "isValid").mockImplementationOnce(() => {
+			throw new Error("");
+		});
+
+		const httpRequest = {
+			body: {
+				name: "John Doe",
+				email: "john_doe@mail.com",
+				password: "my_password",
+				passwordConfirmation: "my_password",
+			},
+		};
+
+		const httpResponse = sut.handle(httpRequest);
+
+		expect(httpResponse.statusCode).toBe(500);
+		expect(httpResponse.body.message).toBe(new ServerError().message);
 	});
 });
