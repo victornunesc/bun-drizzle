@@ -38,4 +38,20 @@ describe("DbAddAccount Usecase", () => {
 
 		expect(encryptSpy).toHaveBeenCalledWith("valid_password");
 	});
+
+	test("Should throw if Encryper throws", async () => {
+		const { sut, encrypterStub } = makeSut();
+		spyOn(encrypterStub, "encrypt").mockImplementationOnce(() => {
+			throw new Error();
+		});
+
+		const accountData = {
+			name: "valid_name",
+			email: "valid@mail.com",
+			password: "valid_password",
+		};
+		const promise = sut.add(accountData);
+
+		expect(promise).rejects.toThrow();
+	});
 });
