@@ -1,7 +1,7 @@
 import { describe, expect, spyOn, test } from "bun:test";
 import type {
 	IAddAccount,
-	IAddAccountArgs,
+	IAddAccountModel,
 } from "../../../domain/usercases/add-account";
 import type { IAccountModel } from "../../../models/account";
 import { InvalidParamError } from "../../erros/invalid-param-error";
@@ -12,7 +12,7 @@ import { SignUpController } from "./signup";
 
 const makeAddAccount = (): IAddAccount => {
 	class AddAccountStub implements IAddAccount {
-		async add(_account: IAddAccountArgs): Promise<IAccountModel> {
+		async add(_account: IAddAccountModel): Promise<IAccountModel> {
 			const fakeAccount = {
 				id: "valid_id",
 				name: "valid_name",
